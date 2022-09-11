@@ -56,9 +56,14 @@ int main(int argc, char *argv[]) {
         index_of_int = 2;
     }
     if (index2 == 1) {
-        index_of_flag = 2;
-        index_of_int = 1;
+        printf("%s\n", "В первую очередь необходимо указать флаг, затем значение");
+        return 0;
+        // это если нам не важен порядок
+        // index_of_flag = 2;
+        // index_of_int = 1;
     }
+
+
     // проверка на то, точно ли инт - инт
     int len_of_int = strlen(argv[index_of_int]);
     int checker = 0;

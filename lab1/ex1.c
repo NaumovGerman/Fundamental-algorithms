@@ -51,13 +51,14 @@ int main(int argc, char *argv[]) {
     // в зависимости от индекс определяю индекс_числа и индекс_флага
     int index_of_flag = 0;
     int index_of_int = 0;
+
     if (index1 == 1) {
-        index_of_flag = 1;
-        index_of_int = 2;
+        printf("%s\n", "В первую очередь необходимо указать значение, затем флаг");
+        return 0;
     }
     if (index2 == 1) {
-        printf("%s\n", "В первую очередь необходимо указать флаг, затем значение");
-        return 0;
+        index_of_flag = 2;
+        index_of_int = 1;
         // это если нам не важен порядок
         // index_of_flag = 2;
         // index_of_int = 1;

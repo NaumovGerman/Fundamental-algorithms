@@ -101,9 +101,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     // если первое введеное значение - флаг
-    if (argv[1][0] == 45 || argv[1][0] == 47) {
-        int index_of_flag = 1;
-    } else {
+    if (argv[1][0] != 45 && argv[1][0] != 47) {
         printf("%s\n", "Вы не ввели флаг");
         return 0;
     }
@@ -152,7 +150,8 @@ int main(int argc, char *argv[]) {
 
             } else {
                 if (fabs(c - 0.0) < 0.000000001) {
-                    x1 = c / b;
+                    if (b - 0.000000001 <= 0.0) x1 = -c / b; // так как при 0.0 -5.5 0.0 корень -0.0000.....
+                    else x1 = c / b;
                 } else {
                     x1 = -1 * c / b;
                 }
@@ -168,7 +167,11 @@ int main(int argc, char *argv[]) {
                 printf("%s\n", "Действительных корней уравнения нет");
             } else {
                 x1 = (-1 * b + sqrt(d)) / qq;
-                x2 = (-1 * b - sqrt(d)) / qq;
+                if (fabs(c - 0.0) < 0.000000001 && a - 0.000000001 <= 0.0) { // так как при -5.5 -2.2 0.0 один из корней -0.0000.....
+                    x2 = (-1 * b - sqrt(d)) / -qq;
+                } else {
+                    x2 = (-1 * b - sqrt(d)) / qq;
+                }
                 printf("%s %f\n", "Корень уравнения x1 =", x1);
                 printf("%s %f\n", "Корень уравнения x2 =", x2);
             }

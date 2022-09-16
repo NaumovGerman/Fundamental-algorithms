@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
     fp = fopen(argv[2], "r");
     if (!fp) {
         printf("%s\n", "Такого файла не существует");
-        exit(1);
+        return 0;
     }
 
     if (marker == 1 || marker == 10) {
@@ -76,6 +76,8 @@ int main(int argc, char *argv[]) {
         if (marker == 10) {
             FILE *go;
             go = fopen(argv[3], "w");
+
+
             while (!feof(fp)) {
                 char c = fgetc(fp);
                 if ('0' <= c && c <= '9') {
@@ -136,6 +138,7 @@ int main(int argc, char *argv[]) {
         if (marker == 20) {
             FILE *go;
             go = fopen(argv[3], "w");
+            
             char line[MAX_LINE_LENGTH];
             while(fgets(line, MAX_LINE_LENGTH, fp)){
                 int count = 0;

@@ -4,19 +4,7 @@
 #include <math.h>
 #include <limits.h>
 
-// int lengh(char *arr) {
-//     int len = 0;
-//     if (arr[0] == 45) {
-//         for (int i = 1; arr[i] != '\0'; i++) {
-//             len++;
-//         }
-//     } else {
-//         for (int i = 0; arr[i] != '\0'; i++) {
-//             len++;
-//         }
-//     }
-//     return len;
-// }
+
 
 int check_value_double(char *arr) {
     int len = strlen(arr);

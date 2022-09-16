@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     fp = fopen(argv[1], "r");
     if (!fp) {
         printf("%s\n", "Такого файла не существует");
-        exit(1);
+        return 0;
     }
 
     char file_name[30];

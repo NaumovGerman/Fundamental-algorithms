@@ -15,7 +15,7 @@ long long fact(long long n){
     long long res = 1;
     if (n > 1) {
         for (int i = 2; i <= n; i++) {
-            if (LLONG_MAX / res + 1 > i) {
+            if (LLONG_MAX / res > i) {
                 res *= i;
             } else {
                 return -1;

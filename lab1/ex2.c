@@ -4,6 +4,20 @@
 #include <math.h>
 #include <limits.h>
 
+// int lengh(char *arr) {
+//     int len = 0;
+//     if (arr[0] == 45) {
+//         for (int i = 1; arr[i] != '\0'; i++) {
+//             len++;
+//         }
+//     } else {
+//         for (int i = 0; arr[i] != '\0'; i++) {
+//             len++;
+//         }
+//     }
+//     return len;
+// }
+
 int check_value_double(char *arr) {
     int len = strlen(arr);
     int znak = 0, dot = 0;
@@ -168,9 +182,9 @@ int main(int argc, char *argv[]) {
             } else {
                 x1 = (-1 * b + sqrt(d)) / qq;
                 if (fabs(c - 0.0) < 0.000000001 && a - 0.000000001 <= 0.0) { // так как при -5.5 -2.2 0.0 один из корней -0.0000.....
-                    x2 = (-1 * b - sqrt(d)) / -qq;
+                    x2 = (-b - sqrt(d)) / -qq;
                 } else {
-                    x2 = (-1 * b - sqrt(d)) / qq;
+                    x2 = (-b - sqrt(d)) / qq;
                 }
                 printf("%s %f\n", "Корень уравнения x1 =", x1);
                 printf("%s %f\n", "Корень уравнения x2 =", x2);
@@ -212,11 +226,8 @@ int main(int argc, char *argv[]) {
             printf("%s\n", "Вы указали неверное значение параметра");
             return 0;
         } 
-        if (a % b == 0) {
-            printf("%s\n", "Первое число кратно второму");
-        } else {
-            printf("%s\n", "Первое не число кратно второму");
-        }
+        
+        printf("Первое %sчисло кратно второму\n", a % b == 0 ? "" : "не ");
         
     } else if ((strcmp(argv[1], "-t") == 0) || (strcmp(argv[1], "/t") == 0)) {
         if (argc != 5) {

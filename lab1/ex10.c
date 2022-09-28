@@ -30,7 +30,6 @@ double** multiplication(double** matr_fir, double** matr_sec, int row, int col, 
 }
 
 double** det(double** matr, int num, int *pre_row, int *pre_col, double *res) {
-    int a = 0;
     for (int i = *pre_row; i < num; i++) {
         if (fabs(matr[i][*pre_col] - 0.0) < 0.000000001) {
             continue;
@@ -75,12 +74,14 @@ int main() {
     int pre_row = 0;
     int pre_col = 0;
     double res = 1.0;
-    int row_fir = 1 + rand()%10;
-    int col_fir = 1 + rand()%10;
-    // int row_fir = 4;
-    // int col_fir = 4;
-    int row_sec = 1 + rand()%10;
-    int col_sec = 1 + rand()%10;
+    // int row_fir = 1 + rand()%10;
+    // int col_fir = 1 + rand()%10;
+    int row_fir = 4;
+    int col_fir = 4;
+    // int row_sec = 1 + rand()%10;
+    // int col_sec = 1 + rand()%10;
+    int row_sec = 5;
+    int col_sec = 5;
     double** matr_fir = create_matr(row_fir, col_fir);
     double** matr_sec = create_matr(row_sec, col_sec);
 
@@ -102,6 +103,7 @@ int main() {
     }
 
     printf("Part C:\n");
+    printf("First matrix:\n");
     if (row_fir == col_fir) {
         for (int i = 0; i < row_fir - 1; i++) {
             matr_fir = det(matr_fir, row_fir, &pre_row, &pre_col, &res);
@@ -117,6 +119,26 @@ int main() {
     } else {
         printf("The determinant cannot be calculated\n");
     }
+    res = 1.0;
+    pre_row = 0;
+    pre_col = 0;
+    printf("Second matrix:\n");
+    if (row_sec == col_sec) {
+        for (int i = 0; i < row_sec - 1; i++) {
+            matr_sec = det(matr_sec, row_sec, &pre_row, &pre_col, &res);
+            pre_row++;
+            pre_col++;
+            print_matr(matr_sec, row_sec, col_sec);
+        }
+        res *= matr_sec[row_sec - 1][row_sec - 1];
+        matr_sec[row_sec - 1][row_sec - 1] = 1.0;
+        print_matr(matr_sec, row_sec, col_sec);
+        printf("Determinant = %.2lf\n", res);   
+
+    } else {
+        printf("The determinant cannot be calculated\n");
+    }
+    
 
     clean_matr(matr_fir, row_fir);
     clean_matr(matr_sec, row_sec);

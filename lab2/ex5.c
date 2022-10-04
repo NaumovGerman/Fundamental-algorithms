@@ -61,7 +61,7 @@ int* do_second(int* arr, int size) {
             n[actual_size++] = arr[i];
         }
     }
-    printf("%d\n", actual_size);
+//     printf("%d\n", actual_size);
     return n;
 }
 

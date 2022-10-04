@@ -4,6 +4,9 @@
 
 int* create_array(int size, int low, int up) {
     int* arr = (int*)malloc(sizeof(int) * size);
+    if (arr == NULL) {
+        return NULL;
+    }
     for (int i = 0; i < size; i++) {
         arr[i] = low + rand()%(up + 1 - low);
     }
@@ -43,6 +46,9 @@ int* do_second(int* arr, int size) {
     int actual_size = 1;
     int flag;
     int* n = (int*)malloc(sizeof(int) * size);
+    if (n == NULL) {
+        return NULL;
+    }
     n[0] = arr[0];
     for (int i = 1; i < size; i++) {
         flag = 0;
@@ -55,6 +61,7 @@ int* do_second(int* arr, int size) {
             n[actual_size++] = arr[i];
         }
     }
+    printf("%d\n", actual_size);
     return n;
 }
 
@@ -64,7 +71,11 @@ int main() {
     int lower_bound, upper_bound, action;
     printf("Enter lower and upper bound: ");
     scanf("%d %d", &lower_bound, &upper_bound);
-    int* arr = create_array(size, lower_bound, upper_bound);    
+    int* arr = create_array(size, lower_bound, upper_bound);
+    if (arr == NULL) {
+        printf("Memory was not allocated\n");
+        return 0;
+    }
     printf("Array:\n");
     for (int i = 0; i < size; i++) {
         printf("%d ", arr[i]);
@@ -79,8 +90,13 @@ int main() {
         output_arr(arr);
     } else if (action == 2) {
         int* new_arr = do_second(arr, size);
-        output_arr(new_arr);
-        free(new_arr);
+        if (new_arr == NULL) {
+            printf("Memory was not allocated\n");
+        } else {
+            output_arr(new_arr);
+            free(new_arr);
+        }
+
     } else {
         printf("Incorrect choice\n");
     }

@@ -31,8 +31,6 @@ int is_good_word(char *word, int num_syst) {
             return 0;
         }
     }       
-    
-
     return 1;
 }
 
@@ -48,6 +46,9 @@ char* convert_to_usual(char *word, int num_syst) {
         temp /= 10;
     }
     char* arr = (char*)malloc(sizeof(char) * count);
+    if (arr == NULL) {
+        return NULL;
+    }
     for (int i = 0; i < count; i++) {
         arr[i] = result%10 + '0';
         result /= 10;
@@ -88,36 +89,19 @@ char* smart_sum(char* result, char* word) {
             ost = temp / 10;
         }
     }
-    // char* ptr = result;
-    // while (*ptr) {
-    //     printf("%c", *ptr);
-    //     ptr++;
-    // }
-    // printf("\n");
-    // ptr = word;
-    // while (*ptr) {
-    //     printf("%c", *ptr);
-    //     ptr++;
-    // }
-    // printf("\n");
-    // char *ptr = act_res;
-    // while (*ptr) {
-    //     printf("%c", *ptr);
-    //     ptr++;
-    // }
-
-    // printf("\n");
     return act_res;
 }
 
 char* find_sum(int count, ...) {
-    // char* result = (char*)malloc(sizeof(char) * 50);
     int size = 0;
     va_list(runner);
     va_start(runner, count);
     char* act = NULL;
     int base = va_arg(runner, int);
     char* result = convert_to_usual(va_arg(runner, char*), base);
+    if (result == NULL) {
+        return NULL;
+    }
     for (int i = 0; i < count - 2; i++) {
         char* a = va_arg(runner, char*);
         if (!is_good_word(a, base)) {
@@ -125,15 +109,17 @@ char* find_sum(int count, ...) {
             return NULL;
         }
         char* conv = convert_to_usual(a, base);
+        if (conv == NULL) {
+            free(result);
+            return NULL;
+        }
         char* act = smart_sum(result, conv);
+        if (act == NULL) {
+            free(result);
+            free(conv);
+            return NULL;
+        }
         result = act;
-        // char* ptr = total;
-        // while (*ptr) {
-        //     printf("%c ", *ptr);
-        //     ptr++;
-        // }
-        // printf("\n");
-        
         free(conv);
     }
     va_end(runner);
@@ -144,6 +130,10 @@ char* find_sum(int count, ...) {
         ptr++;
     }
     char* output = (char*)malloc(sizeof(char) * (size+1));
+    if (output == NULL) {
+        free(result);
+        return NULL;
+    }
     ptr = output;
     for (int i = size - 1; i >= 0; i--) {
         *ptr++ = result[i];
@@ -162,6 +152,5 @@ int main() {
         printf("%s\n", hey);
         free(hey);
     }
-
     return 0;
 }

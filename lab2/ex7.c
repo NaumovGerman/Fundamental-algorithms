@@ -59,7 +59,7 @@ double calculate(int count, ...) {
     x = va_arg(runner, double);
     n = va_arg(runner, double);
     for (int i = n; i >= 0; i--) {
-        res += va_arg(runner, double) * power(x, n);
+        res += va_arg(runner, double) * power(x, i);
     }
     va_end(runner);
     return res;
@@ -78,7 +78,7 @@ int main() {
     } else {
         printf("Invalid input\n");
     }
-    double calc = calculate(7, (double) 5.5, (double) 4, (double) 6, (double) -2, (double) -6, (double) 7, (double) -11);
+    double calc = calculate(7, (double) 7.1, (double) 4, (double) 22, (double) -2, (double) 65, (double) 0, (double) -11);
     printf("%f\n", calc);
     return 0;
 }

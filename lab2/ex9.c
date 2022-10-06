@@ -7,11 +7,11 @@
 int is_good_word(char *word, int num_syst) {
     int temp;
     if (word[0] == '-') return 0;
-    for (int i = 1; word[i] != '\0'; i++) {
+    for (int i = 0; word[i] != '\0'; i++) {
         if (isdigit(word[i])) {
             temp = word[i] - '0';
         } else if (isalpha(word[i])) {
-            temp = word[i] - 'A' + 10;
+            temp = toupper(word[i]) - 'A' + 10;
         } else {
             return 0;
         }
@@ -19,18 +19,6 @@ int is_good_word(char *word, int num_syst) {
             return 0;
         }
     }            
-    for (int i = 0; word[i] != '\0'; i++) {
-        if (isdigit(word[i])) {
-            temp = word[i] - '0';
-        } else if (isalpha(word[i])) {
-            temp = word[i] - 'A' + 10;
-        } else {
-            return 0;
-        }
-        if (temp >= num_syst) {
-            return 0;
-        }
-    }       
     return 1;
 }
 
@@ -38,7 +26,7 @@ char* convert_to_usual(char *word, int num_syst) {
     unsigned long long int result = 0, temp;
     int a, count = 0, size = 0;
     for (int i = 0; word[i] != '\0'; i++) {
-        result = result * num_syst + (isdigit(word[i]) ? word[i] - '0' : word[i] - 'A' + 10);
+        result = result * num_syst + (isdigit(word[i]) ? word[i] - '0' : toupper(word[i]) - 'A' + 10);
     }
     temp = result;
     while (temp > 0) {

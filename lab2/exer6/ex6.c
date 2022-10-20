@@ -158,6 +158,15 @@ Okey* find_all_strings(int count, ...) {
         if (my_array[i].status == -1) {
             free(file_path);
             free(my_string);
+            
+            if (i != 0) {
+                for (int j = 0 ; j < i; j++) {
+                    free(my_array[j].rows);
+                    free(my_array[j].arr);
+                }
+                free(my_array);
+            }
+
             va_end(runner);
             return NULL;
         }
@@ -165,7 +174,14 @@ Okey* find_all_strings(int count, ...) {
         if (my_array[i].status == -2) {
             free(file_path);
             free(my_string);
-            free(my_array);
+            if (i != 0) {
+                for (int j = 0 ; j < i; j++) {
+                    free(my_array[j].rows);
+                    free(my_array[j].arr);
+                }
+                free(my_array);
+            }
+
             va_end(runner);
             return NULL;
         }
@@ -174,7 +190,14 @@ Okey* find_all_strings(int count, ...) {
         file_path = (char*)malloc(sizeof(char) * 60);
         if (file_path == NULL) {
             free(my_string);
-            free(my_array);
+            if (i != 0) {
+                for (int j = 0 ; j < i; j++) {
+                    free(my_array[j].rows);
+                    free(my_array[j].arr);
+                }
+                free(my_array);
+            }
+            
             va_end(runner);
             return NULL;
         }

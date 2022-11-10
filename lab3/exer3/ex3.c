@@ -2,6 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <math.h>
+
+typedef struct Node Node;
 
 enum error{
     its_ok = 1,
@@ -19,6 +22,21 @@ typedef struct {
 } employee;
 
 
+typedef struct Node {
+	employee* key;
+	Node* parent;
+	Node* child;
+	Node* left;
+	Node* right;
+	int degree;
+} Node;
+
+typedef struct {
+	int size;
+	Node* min;
+} fibonacci_heap;
+
+/////////////////////////////////////////////////
 int check_id(char* id, int len) {
     for (int i = 0; i < len - 1; i++) {
         if (!isdigit(id[i])) {
@@ -150,29 +168,10 @@ void skip(char **ptr) {
 int fill_word(char** word, char **ptr, int *size) {
     int a, true_len = 1;
     while (1) {
-        if (isspace(**ptr)) {
+        if (**ptr == '\0' || **ptr == ' ') {
             break;
         }
         a = join_char(&(*word), **ptr, &(*size));
-        true_len++;
-        (*ptr)++;
-    }
-    return true_len;
-}
-
-int prfill_word(char** word, char **ptr, int *size) {
-    int a, true_len = 1;
-    while (1) {
-        if (**ptr == '\n' || **ptr == ' ') {
-            break;
-        }
-        a = join_char(&(*word), **ptr, &(*size));
-        // printf("%c\n", **ptr);
-        // if (**ptr = '\n') {
-        //     true_len++;
-        //     (*ptr)++;
-        //     break;
-        // }
         true_len++;
         (*ptr)++;
     }
@@ -180,7 +179,6 @@ int prfill_word(char** word, char **ptr, int *size) {
 }
 
 int try_to_fill_stud(employee** all, char* my_string, int length_str, int* sz, int* true_len) {
-    // printf("###%d", **true_len);
     employee one_man;
     employee* temp = NULL;
     int ex = 0;
@@ -194,7 +192,6 @@ int try_to_fill_stud(employee** all, char* my_string, int length_str, int* sz, i
     char *best_ptr = my_string;
 
     if (*sz == 0) {
-        // printf("wtfffffffff\n");
         *sz = 1;
         temp = (employee*)realloc(*all, sizeof(employee) * (*sz));
         if (!temp) {
@@ -249,14 +246,10 @@ int try_to_fill_stud(employee** all, char* my_string, int length_str, int* sz, i
     free(surname);
     skip(&best_ptr);
 
-    // where = fill_word(&salary, &best_ptr, &size_salary);
-    printf("%c\n", *best_ptr);
-    where = prfill_word(&salary, &best_ptr, &size_salary);
-    printf("%s %d\n", salary, size_salary);
+    where = fill_word(&salary, &best_ptr, &size_salary);
     ex = check_salary(salary, where);
     if (ex == incor_word) {
         free((*all)[*true_len].name);
-
         free((*all)[*true_len].surname);
         free(salary);
         return incor_word;
@@ -289,14 +282,16 @@ int file_to_arr(employee** mankind, int *number_of_man, FILE *f1) {
             // }
             // printf("--wtf\n");
             free(my_string);
+            my_string = NULL;
             len_str = 0;
         }
     }
     *number_of_man = cur_size;
     *mankind = all;
     return 0;
-
 }
+
+//////////////////////////////////////////////////
 
 void print_arr(employee* mankind, int len) {
     for (int i = 0; i < len; i++) {
@@ -313,6 +308,211 @@ void free_arr(employee* mankind, int len) {
     free(mankind);
 }
 
+//-------------------------------------------------------------------------
+int fib_insert(fibonacci_heap* heap, employee* node, int a) {
+    if (!heap) {
+		// return fibonacci_insert_heap_incorrect_heap_ptr;
+	}
+    Node* temp = (Node*)malloc(sizeof(Node));
+    if (temp == NULL) {
+        return no_memmory;
+    }
+    temp->key = node;
+    temp->child = NULL;
+    temp->parent = NULL;
+    temp->degree = 0;
+    if (heap->size == 0) {
+        heap->min = temp;
+        heap->min->left = temp;
+        heap->min->right = temp;
+    } else {
+        Node* prev_right = heap->min->right;
+        heap->min->right = temp;
+        temp->left = heap->min;
+        temp->right = prev_right;
+        prev_right->left = temp;
+    }
+    // if (operation == '<' && (new_node->key->wage < heap->root->key->wage) || operation == '>' && (new_node->key->wage > heap->root->key->wage)) {
+	// 	heap->root = new_node;
+	// }
+    if (a == 1 && (temp->key->salary < heap->min->key->salary)) {
+        heap->min = temp;
+    }
+    (heap->size)++;
+    return its_ok;
+}
+
+
+void union_lists(Node* first, Node* second) {
+    Node* l = first->left;
+    Node* r = second->right;
+    second->right = first;
+    first->left = second;
+    l->right = r;
+    r->left = l;
+}
+void fib_link(fibonacci_heap* heap, Node* x, Node* y) {
+    y->left->right = y->right;
+    y->right->left = y->left;
+    y->left = NULL;
+    y->right = NULL;
+    if (x->child != NULL) {
+        y->parent = x;
+        y->left = x->child;
+        y->right = x->child->right;
+        x->child->right->left = y;
+        x->child->right = y;
+    } else {
+        x->child = y;
+        y->parent = x;
+        y->left = y;
+        y->right = y;
+    }
+    (x->degree)++;
+}
+
+int fib_consolid(fibonacci_heap* heap, int a) {
+    Node* helper = NULL;
+    int num = log2(heap->size) + 1;
+    Node** arr = (Node**)calloc(num, sizeof(Node*));
+
+    if (arr == NULL) {
+        return no_memmory;
+    }
+
+    for (int i = 0; i < num; i++) {
+        arr[i] == NULL;
+    }
+    int degree = heap->min->degree;
+    arr[degree] = heap->min;
+    Node* current = heap->min;
+    if (current->right != current) {
+        current = current->right;
+        for (int i = 0; i < num - 1; i++) {
+            degree = current->degree;
+            while (arr[degree] != NULL) {
+                helper = arr[degree];
+                if (helper == current) {
+                    break;
+                }
+                if (a == 1 && current->key->salary > helper->key->salary) { // 1 = <
+                    Node* temp = current;
+                    current = helper;
+                    helper = temp;
+                }
+                fib_link(heap, current, helper);
+                arr[degree] = NULL;
+                degree++;
+            }
+             if ((a == 1 && current->key->salary < helper->key->salary) && (current != heap->min)) { // 1 = <
+                    heap->min = current;
+            }
+            if (helper != current) { // минус час жизни
+                arr[degree] = current;
+            }
+            current = current->right;
+        }
+    }
+    
+    heap->min = NULL;
+    for (int i = 0; i < num; i++) {
+        if (arr[i] != NULL) {
+            if (heap->min == NULL) {
+                heap->min = arr[i];
+                heap->min->left = arr[i];
+                heap->min->right = arr[i];
+            } else {
+                arr[i]->left = heap->min;
+                arr[i]->right = heap->min->right;
+                heap->min->right->left = arr[i];
+                heap->min->right = arr[i];
+                if (a == 1 && (arr[i]->key->salary < heap->min->key->salary)) {
+                    heap->min = arr[i];
+                }
+            }
+        }
+    }
+
+    // здесь утечка
+    // for (int i = 0; i < num; i++) {
+    //     if (arr[i] != NULL) {
+    //         free(arr[i]);
+    //     }
+    // }
+    free(arr); 
+    return its_ok;
+    
+}
+int extract(fibonacci_heap* heap, Node** to_file, int a) {
+    int flag = its_ok;
+    Node* temp = heap->min;
+    if (temp != NULL) {
+        if (temp->child != NULL) {
+            Node* current = temp->child;
+            Node *helper = NULL;
+            helper = current->right;
+            current->parent = NULL;
+            current->left = temp;
+            current->right = temp->right;
+            temp->right->left = current;
+            temp->right = current;
+            current = helper;
+            while(current != temp->child) {
+                helper = current->right;
+                current->parent = NULL;
+                current->left = temp;
+                current->right = temp->right;
+                temp->right->left = current;
+                temp->right = current;
+                current = helper;
+            }
+        }
+        temp->left->right = temp->right;
+        temp->right->left = temp->left;
+
+        if (temp == temp->right) {
+            heap->min = NULL;
+        } else {
+            heap->min = temp->right;
+            flag = fib_consolid(heap, a);
+            if (flag == no_memmory) {
+                return no_memmory;
+            }
+        }
+        heap->size--;
+    }
+    (*to_file) = temp;
+    return its_ok;
+}
+
+int sort(employee* mankind, int number_of_man, FILE* f1, int a) {
+    int flag = its_ok;
+    fibonacci_heap heap;
+    heap.min = NULL;
+    heap.size = 0;
+    for (int i = 0; i < number_of_man; i++) {
+        flag = fib_insert(&heap, &(mankind[i]), a);
+        if (flag == no_memmory) {
+            return no_memmory;
+        }
+    }
+    Node* to_file = NULL;
+    for (int i = 0; i < number_of_man; i++) {
+        flag = extract(&heap, &to_file, a);
+        if (flag == no_memmory) {
+            return no_memmory;
+        }
+        fprintf(f1, "%3d | %8s | %8s | %.2lf\n", to_file->key->id, to_file->key->name,
+        to_file->key->surname, to_file->key->salary);
+        free(to_file->key->name);
+        free(to_file->key->surname);
+        free(to_file);
+        to_file = NULL;
+    }
+    return its_ok;
+}   
+//-------------------------------------------------------------------------
+
 int main(int argc, char* argv[]) {
     int ex = 0, number_of_man = 0;
     // if (argc != 3) {
@@ -321,6 +521,7 @@ int main(int argc, char* argv[]) {
     // }
     employee *mankind;
     FILE *f1;
+    FILE *out;
     f1 = fopen(argv[1], "r");
     if (f1 == NULL) {
         printf("There is no such file\n");
@@ -328,9 +529,22 @@ int main(int argc, char* argv[]) {
     }
 
     ex = file_to_arr(&mankind, &number_of_man, f1);
-    print_arr(mankind, number_of_man);
-    free_arr(mankind, number_of_man);
+    // print_arr(mankind, number_of_man);
+    
+    out = fopen("out.txt", "a");
+    if (out == NULL) {
+        printf("Smth goes wrong..\n");
+        free_arr(mankind, number_of_man);
+        fclose(f1);
+        return -1;
+    }
+    
+    ex = sort(mankind, number_of_man, out, 1);
+    free(mankind);
     fclose(f1);
+    fclose(out);
+    // 
+    
 
     // if (strcmp("-a", argv[2]) == 0 || strcmp("/a", argv[2]) == 0) {
     //     do some short;

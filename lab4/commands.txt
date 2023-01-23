@@ -1,0 +1,7 @@
+Load A, in.txt;
+Remove A, 2, 7;
+Copy A, 4, 10, B;
+Shuffle A;
+Print A, all;
+Print B, all;
+Print Q, all;
